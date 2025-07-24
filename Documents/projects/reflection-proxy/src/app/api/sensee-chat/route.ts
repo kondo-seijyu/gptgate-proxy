@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { handleChatToTags, fetchImagesByTagsOrKeywords } from '../../../lib/logic';;
 
 export async function POST(req: Request) {
+  const secret = req.headers.get('x-shared-secret');
+  if (secret !== process.env.SHARED_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const body = await req.json();
   const { question } = body;
 
